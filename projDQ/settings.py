@@ -21,7 +21,6 @@ if os.path.exists('.env'):
     environ.Env.read_env('.env')
     DJANGO_ENV = env('RUNTIME_ENV')
 else:
-    print("No .env file found")
     DJANGO_ENV = 'prod'
     # environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
