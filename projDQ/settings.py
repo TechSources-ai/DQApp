@@ -49,8 +49,18 @@ elif DJANGO_ENV == 'test_cloud':
     }
 else:
     SECRET_KEY = env('APP_SECRET_KEY')
-    DEBUG = False
+    DEBUG = True
     ALLOWED_HOSTS = ['*']
+    # Static files (CSS, JavaScript, images)
+    # STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+    # AZURE_ACCOUNT_NAME = env('AZURE_ACCOUNT_NAME')
+    # AZURE_ACCOUNT_KEY = env('AZURE_ACCOUNT_KEY')
+    # AZURE_CONTAINER = env('AZURE_CONTAINER')
+
+    # # Media files
+    # DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+    # AZURE_MEDIA_CONTAINER = env('AZURE_MEDIA_CONTAINER')
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
