@@ -45,12 +45,18 @@ elif DJANGO_ENV == 'test_cloud':
     ALLOWED_HOSTS = []
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': os.environ['DB_NAME'],
             'USER': os.environ['DB_USER'],
             'PASSWORD': os.environ['DB_PASSWORD'],
             'HOST': os.environ['DB_HOST'],
-            'PORT': '5432',
+            'PORT': '3306',
+            'OPTIONS': {
+                # Required for secure connection to Azure MySQL Flexible Server
+                'ssl': {
+                    'ca': './DigiCertGlobalRootG2.crt.pem',
+                } 
+            },
         }
     }
 else:
@@ -58,25 +64,24 @@ else:
     DEBUG = False
     ALLOWED_HOSTS = [env('ALLOWED_HOSTS')]
     # Static files (CSS, JavaScript, images)
-    USE_AZURE_STORAGE = env.bool('USE_AZURE_STORAGE', default=False)
-    if USE_AZURE_STORAGE:
-        STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-        AZURE_ACCOUNT_NAME = env('AZURE_ACCOUNT_NAME')
-        AZURE_ACCOUNT_KEY = env('AZURE_ACCOUNT_KEY')
-        AZURE_CONTAINER = env('AZURE_CONTAINER')
-        # Media files
-        DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-        AZURE_MEDIA_CONTAINER = env('AZURE_MEDIA_CONTAINER')
+
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
     # Database
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': env('DB_NAME'),
             'USER': env('DB_USER'),
             'PASSWORD': env('DB_PASSWORD'), 
             'HOST': env('DB_HOST'),
-            'PORT': '5432',
+            'PORT': '3306',
+            'OPTIONS': {
+                # Required for secure connection to Azure MySQL Flexible Server
+                'ssl': {
+                    'ca': BASE_DIR / 'DigiCertGlobalRootG2.crt.pem',
+                } 
+            },
         }
     }
 
@@ -95,6 +100,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
